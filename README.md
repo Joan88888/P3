@@ -76,6 +76,7 @@ Ejercicios básicos
       bool PitchAnalyzer::unvoiced(float pot, float r1norm, float rmaxnorm) const {
         if (rmaxnorm > umaxnorm && r1norm > ur1norm && pot >= upot) return false;
         return true;
+      }
       ```
 - Una vez completados los puntos anteriores, dispondrá de una primera versión del estimador de pitch. El 
   resto del trabajo consiste, básicamente, en obtener las mejores prestaciones posibles con él.
@@ -93,10 +94,14 @@ Ejercicios básicos
 	    Recuerde configurar los paneles de datos para que el desplazamiento de ventana sea el adecuado, que
 		en esta práctica es de 15 ms.
 
+      <img src="img/p3_pitch.png" width="800" align="center">
+
       - Use el estimador de pitch implementado en el programa `wavesurfer` en una señal de prueba y compare
 	    su resultado con el obtenido por la mejor versión de su propio sistema.  Inserte una gráfica
 		ilustrativa del resultado de ambos estimadores.
      
+     <img src="img/p3_pitch_ref.png" width="800" align="center">
+     <img src="img/p3_comparacio.png" width="800" align="center">
 		Aunque puede usar el propio Wavesurfer para obtener la representación, se valorará
 	 	el uso de alternativas de mayor calidad (particularmente Python).
   

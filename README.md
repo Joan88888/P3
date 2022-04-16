@@ -125,6 +125,12 @@ Ejercicios de ampliación
   * Inserte un *pantallazo* en el que se vea el mensaje de ayuda del programa y un ejemplo de utilización
     con los argumentos añadidos.
 
+    <img src="img/p3_help_docopt.png" width="800" align="center">
+
+    <img src="img/p3_bash.png" width="800" align="center">
+
+    <img src="img/p3_utilitzacio_parametres.png" width="800" align="center">
+
 - Implemente las técnicas que considere oportunas para optimizar las prestaciones del sistema de estimación
   de pitch.
 

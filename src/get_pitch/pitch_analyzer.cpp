@@ -89,6 +89,19 @@ namespace upc {
     //Compute correlation
     autocorrelation(x, r);
 
+    //Normalitzar autocorrelació i aplicar center clipping
+    float max_r = *max_element(r.begin(), r.end());
+    float th_cp_r = 0.1;
+    for (unsigned int i = 0; i < r.size(); i++) {
+      r[i] = r[i] / max_r;
+      if (abs(r[i]) < th_cp_r)
+        r[i] = 0;
+      if (r[i] > th_cp_r)
+        r[i] -= th_cp_r;
+      if (r[i] < -th_cp_r)
+        r[i] += th_cp_r;
+    } 
+
     vector<float>::const_iterator iR = r.begin(), iRMax = iR;
 
     /// \TODO 

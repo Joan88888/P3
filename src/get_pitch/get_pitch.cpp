@@ -25,9 +25,9 @@ Usage:
     get_pitch --version
 
 Options:
-    -m FLOAT, --umaxnorm=FLOAT    umbral de l'autocorrelació a 0 [default: 0.5]
-    -1 FLOAT, --ur1norm=FLOAT     umbral de l'autocorrelació a llarg termini [default: 0.5]
-    -p FLOAT, --upot=FLOAT        umbral de potència [default: 0]
+    -m FLOAT, --umaxnorm=FLOAT    umbral de l'autocorrelació a 0 [default: 0.42]
+    -1 FLOAT, --ur1norm=FLOAT     umbral de l'autocorrelació a llarg termini [default: 0.4]
+    -p FLOAT, --upot=FLOAT        umbral de potència [default: -50]
     -h, --help  Show this screen
     --version   Show the version of the project
 
@@ -70,6 +70,19 @@ int main(int argc, const char *argv[]) {
   /// \TODO
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
   /// central-clipping or low pass filtering may be used.
+
+  ///Normalitzar la senyal i aplicar center clipping
+  float max_senyal = *max_element(x.begin(),x.end());
+  float th_cp = 0.001;
+  for (unsigned int i = 0; i < x.size(); i++) {
+    x[i] = x[i] / max_senyal;
+    if (abs(x[i]) < th_cp)
+      x[i] = 0;
+    if (x[i] > th_cp)
+      x[i] -= th_cp;
+    if (x[i] < -th_cp)
+      x[i] += th_cp;
+  }
   
   // Iterate for each frame and save values in f0 vector
   vector<float>::iterator iX;
@@ -82,6 +95,7 @@ int main(int argc, const char *argv[]) {
   /// \TODO
   /// Postprocess the estimation in order to supress errors. For instance, a median filter
   /// or time-warping may be used.
+        
 
   // Write f0 contour into the output file
   ofstream os(output_txt);

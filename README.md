@@ -14,13 +14,13 @@ Ejercicios básicos
   `get_pitch`.
 
    * Complete el cálculo de la autocorrelación e inserte a continuación el código correspondiente.
-
+    ```c++
       void PitchAnalyzer::autocorrelation(const vector<float> &x, vector<float> &r) const {
 
         for (unsigned int l = 0; l < r.size(); l++) {
 
           r[l] = 0;
-          
+
           for (unsigned int n = l; n < x.size(); n++)
             r[l] += x[n]*x[n-l];
 
@@ -30,12 +30,13 @@ Ejercicios básicos
         if (r[0] == 0.0F)
           r[0] = 1e-10; 
       }
+    ```
 
    * Inserte una gŕafica donde, en un *subplot*, se vea con claridad la señal temporal de un segmento de
      unos 30 ms de un fonema sonoro y su periodo de pitch; y, en otro *subplot*, se vea con claridad la
 	 autocorrelación de la señal y la posición del primer máximo secundario.
 
-    <img src="p3_grafica_autocorr.png" width="800" align="center">
+    <img src="img/p3_grafica_autocorr.png" width="800" align="center">
 
 	 NOTA: es más que probable que tenga que usar Python, Octave/MATLAB u otro programa semejante para
 	 hacerlo. Se valorará la utilización de la biblioteca matplotlib de Python.

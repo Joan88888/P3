@@ -19,9 +19,10 @@ namespace upc {
       - autocorrelation divided by length
       */
       r[l] = 0;
-      for (unsigned int n = l; n < x.size(); n++) {
+      
+      for (unsigned int n = l; n < x.size(); n++)
         r[l] += x[n]*x[n-l];
-      }
+
       r[l] /= x.size();
     }
 

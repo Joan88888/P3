@@ -43,7 +43,33 @@ Ejercicios básicos
 
    * Determine el mejor candidato para el periodo de pitch localizando el primer máximo secundario de la
      autocorrelación. Inserte a continuación el código correspondiente.
+      ```c++
+      float PitchAnalyzer::compute_pitch(vector<float> & x) const {
+        if (x.size() != frameLen)
+          return -1.0F;
 
+        for (unsigned int i=0; i<x.size(); ++i)
+          x[i] *= window[i];
+
+        vector<float> r(npitch_max);
+
+        autocorrelation(x, r);
+
+        vector<float>::const_iterator iR = r.begin(), iRMax = iR;
+
+        for (iR = iRMax = r.begin() + npitch_min; iR < r.begin() + npitch_max; iR++)
+          if (*iR > *iRMax) iRMax = iR;
+
+        unsigned int lag = iRMax - r.begin();
+
+        float pot = 10 * log10(r[0]);
+        
+        if (unvoiced(pot, r[1]/r[0], r[lag]/r[0]))
+          return 0;
+        else
+          return (float) samplingFreq/(float) lag;
+      }
+      ```
    * Implemente la regla de decisión sonoro o sordo e inserte el código correspondiente.
 
 - Una vez completados los puntos anteriores, dispondrá de una primera versión del estimador de pitch. El 

@@ -102,12 +102,15 @@ Ejercicios básicos
      
      <img src="img/p3_pitch_ref.png" width="800" align="center">
      <img src="img/p3_comparacio.png" width="800" align="center">
+
 		Aunque puede usar el propio Wavesurfer para obtener la representación, se valorará
 	 	el uso de alternativas de mayor calidad (particularmente Python).
   
   * Optimice los parámetros de su sistema de estimación de pitch e inserte una tabla con las tasas de error
     y el *score* TOTAL proporcionados por `pitch_evaluate` en la evaluación de la base de datos 
 	`pitch_db/train`..
+
+    <img src="img/p3_score_1.png" width="800" align="center">
 
 Ejercicios de ampliación
 ------------------------

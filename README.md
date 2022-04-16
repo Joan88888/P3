@@ -18,21 +18,16 @@ Ejercicios básicos
       void PitchAnalyzer::autocorrelation(const vector<float> &x, vector<float> &r) const {
 
         for (unsigned int l = 0; l < r.size(); l++) {
-          /// \TODO Compute the autocorrelation r[l]
-          /** 
-          \DONE Autocorrelation r[l] computed
-          - autocorrelation set to 0
-          - autocorrelation acumulated for all the signal
-          - autocorrelation divided by length
-          */
+
           r[l] = 0;
-          for (unsigned int n = l; n < x.size(); n++) {
+          
+          for (unsigned int n = l; n < x.size(); n++)
             r[l] += x[n]*x[n-l];
-          }
+
           r[l] /= x.size();
         }
 
-        if (r[0] == 0.0F) //to avoid log() and divide zero 
+        if (r[0] == 0.0F)
           r[0] = 1e-10; 
       }
 

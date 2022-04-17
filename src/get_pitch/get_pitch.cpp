@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string.h>
 #include <errno.h>
+#include <algorithm>
 
 #include "wavfile_mono.h"
 #include "pitch_analyzer.h"
@@ -72,8 +73,11 @@ int main(int argc, const char *argv[]) {
   /// central-clipping or low pass filtering may be used.
 
   ///Normalitzar la senyal i aplicar center clipping
-  float max_senyal = *max_element(x.begin(), x.end());
-  float th_cp = 0.001;
+  float max_senyal = 0;
+  for (unsigned int i = 0; i < x.size(); i++)
+    if (x[i] > max_senyal)
+      max_senyal = x[i];
+  float th_cp = 0.03*max_senyal;
   for (unsigned int i = 0; i < x.size(); i++) {
     x[i] = x[i] / max_senyal;
     if (abs(x[i]) < th_cp)
@@ -96,6 +100,21 @@ int main(int argc, const char *argv[]) {
   /// Postprocess the estimation in order to supress errors. For instance, a median filter
   /// or time-warping may be used.
 
+  std::vector<float> f0_aux(f0);
+  float max = 0.0;
+  float min = 10000.0;
+
+  /*for (unsigned int j = 2; j < f0_aux.size() - 1; j++) {
+    for (unsigned int i = -1; i < 2; i++) {
+      if (f0_aux[i] > max)
+        f0_aux[i] = max;
+      if (f0_aux[i] < min)
+        f0_aux[i] = min;
+    }
+    min = min(min(f0_aux[j-1], f0_aux[j]), f0_aux[j+1]);
+    max = max(max(f0_aux[j-1], f0_aux[j]), f0_aux[j+1]);
+    f0[j] = f0_aux[j-1] + f0_aux[j] + f0_aux[j+1] - max - min;
+  }*/
 
   // Write f0 contour into the output file
   ofstream os(output_txt);

@@ -94,7 +94,8 @@ Ejercicios básicos
 	    Recuerde configurar los paneles de datos para que el desplazamiento de ventana sea el adecuado, que
 		en esta práctica es de 15 ms.
 
-      <img src="img/p3_pitch.png" width="800" align="center">
+      <img src="img/p3_pitch_2.png" width="800" align="center">
+      <img src="img/p3_autocorrelacio.png" width="800" align="center">
 
       - Use el estimador de pitch implementado en el programa `wavesurfer` en una señal de prueba y compare
 	    su resultado con el obtenido por la mejor versión de su propio sistema.  Inserte una gráfica
@@ -105,7 +106,8 @@ Ejercicios básicos
 
      ***Pitch calculado por nuestro programa get_pitch:***
      <img src="img/p3_resultat_get_pitch.png" width="800" align="center">
-     
+
+     ***Comparación:***
      <img src="img/p3_comparacio.png" width="800" align="center">
 
 		Aunque puede usar el propio Wavesurfer para obtener la representación, se valorará
@@ -130,10 +132,13 @@ Ejercicios de ampliación
   * Inserte un *pantallazo* en el que se vea el mensaje de ayuda del programa y un ejemplo de utilización
     con los argumentos añadidos.
 
+    ***Mensaje de ayuda:***
     <img src="img/p3_help_docopt.png" width="800" align="center">
 
+    ***Código de run_get_pitch.sh (hemos añadido un if que hace que si no se entran parámetros se utilizen unos por defecto):***
     <img src="img/p3_bash.png" width="800" align="center">
 
+    ***Ejemplo de utilización:***
     <img src="img/p3_utilitzacio_parametres.png" width="800" align="center">
 
 - Implemente las técnicas que considere oportunas para optimizar las prestaciones del sistema de estimación

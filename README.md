@@ -99,10 +99,13 @@ Ejercicios básicos
       - Use el estimador de pitch implementado en el programa `wavesurfer` en una señal de prueba y compare
 	    su resultado con el obtenido por la mejor versión de su propio sistema.  Inserte una gráfica
 		ilustrativa del resultado de ambos estimadores.
-     **Pitch calculado por wavesurfer:**
+
+     ***Pitch calculado por wavesurfer:***
      <img src="img/p3_pitch_ref.png" width="800" align="center">
-     **Pitch calculado por nuestro programa get_pitch:**
+
+     ***Pitch calculado por nuestro programa get_pitch:***
      <img src="img/p3_resultat_get_pitch.png" width="800" align="center">
+     
      <img src="img/p3_comparacio.png" width="800" align="center">
 
 		Aunque puede usar el propio Wavesurfer para obtener la representación, se valorará

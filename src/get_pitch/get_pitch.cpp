@@ -65,14 +65,14 @@ int main(int argc, const char *argv[]) {
   int n_shift = rate * FRAME_SHIFT;
 
   // Define analyzer
-  PitchAnalyzer analyzer(n_len, rate, umaxnorm, ur1norm, upot, PitchAnalyzer::HAMMING, 50, 500);
+  PitchAnalyzer analyzer(n_len, rate, umaxnorm, ur1norm, upot, PitchAnalyzer::HAMMING, 60, 400);
 
   /// \TODO
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
   /// central-clipping or low pass filtering may be used.
 
   ///Normalitzar la senyal i aplicar center clipping
-  float max_senyal = *max_element(x.begin(),x.end());
+  float max_senyal = *max_element(x.begin(), x.end());
   float th_cp = 0.001;
   for (unsigned int i = 0; i < x.size(); i++) {
     x[i] = x[i] / max_senyal;
@@ -95,7 +95,7 @@ int main(int argc, const char *argv[]) {
   /// \TODO
   /// Postprocess the estimation in order to supress errors. For instance, a median filter
   /// or time-warping may be used.
-        
+
 
   // Write f0 contour into the output file
   ofstream os(output_txt);

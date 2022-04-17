@@ -33,6 +33,9 @@ namespace upc {
     
     float umaxnorm, ur1norm, upot;
  
+    
+    void cepstrum(const std::vector<float> &x, std::vector<float> &c) const;
+
 	///
 	/// Computes correlation from lag=0 to r.size()
 	///

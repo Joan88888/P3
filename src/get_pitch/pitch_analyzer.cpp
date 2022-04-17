@@ -4,10 +4,33 @@
 #include <math.h>
 #include "pitch_analyzer.h"
 
+#include "ffft/FFTReal.h"
+
 using namespace std;
 
 /// Name space of UPC
 namespace upc {
+  void PitchAnalyzer::cepstrum(const vector<float> &x, vector<float> &c) const {
+    float a = log2(x.size());
+    unsigned int n = ceil(a);
+    long len = 2^n;
+    ffft::FFTReal <float> fft_object (len);
+
+    float x2 [len];
+    float f [len];
+    float f_log [len];
+    float cep [len];
+
+    for (unsigned int i = 0; i < x.size(); i++)
+      x2[i] = x[i];
+    fft_object.do_fft(f, x2);
+    for (unsigned int i = 0; i < len; i++)
+      f_log[i] = log10(abs(f[i]));
+    fft_object.do_ifft(f_log, cep);
+    for (unsigned int i = 0; i < c.size(); i++)
+      c[i] = cep[i];
+  } 
+  
   void PitchAnalyzer::autocorrelation(const vector<float> &x, vector<float> &r) const {
 
     for (unsigned int l = 0; l < r.size(); l++) {
@@ -85,9 +108,11 @@ namespace upc {
       x[i] *= window[i];
 
     vector<float> r(npitch_max);
+    vector<float> c(npitch_max);
 
     //Compute correlation
     autocorrelation(x, r);
+    //cepstrum(x, c);
 
     //Normalitzar autocorrelació i aplicar center clipping
     float max_r = *max_element(r.begin(), r.end());
@@ -124,7 +149,7 @@ namespace upc {
     //You can print these (and other) features, look at them using wavesurfer
     //Based on that, implement a rule for unvoiced
     //change to #if 1 and compile
-#if 0   //posar a 1 per debugejar
+#if 1   //posar a 1 per debugejar
     if (r[0] > 0.0F)
       cout << pot << '\t' << r[1]/r[0] << '\t' << r[lag]/r[0] << endl;
 #endif

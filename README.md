@@ -101,6 +101,7 @@ Ejercicios básicos
 		ilustrativa del resultado de ambos estimadores.
      
      <img src="img/p3_pitch_ref.png" width="800" align="center">
+     <img src="img/p3_resultat_get_pitch.png" width="800" align="center">
      <img src="img/p3_comparacio.png" width="800" align="center">
 
 		Aunque puede usar el propio Wavesurfer para obtener la representación, se valorará

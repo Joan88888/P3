@@ -4,7 +4,6 @@
 #include <fstream>
 #include <string.h>
 #include <errno.h>
-#include <algorithm>
 
 #include "wavfile_mono.h"
 #include "pitch_analyzer.h"
@@ -26,9 +25,9 @@ Usage:
     get_pitch --version
 
 Options:
-    -m FLOAT, --umaxnorm=FLOAT    umbral de l'autocorrelació a 0 [default: 0.42]
-    -1 FLOAT, --ur1norm=FLOAT     umbral de l'autocorrelació a llarg termini [default: 0.4]
-    -p FLOAT, --upot=FLOAT        umbral de potència [default: -50]
+    -m FLOAT, --umaxnorm=FLOAT            umbral de l'autocorrelació a 0 [default: 0.298]
+    -1 FLOAT, --ur1norm=FLOAT             umbral de l'autocorrelació a llarg termini [default: 0.4]
+    -c FLOAT, --ucenterclipping=FLOAT     umbral de center clipping [default: 0.045]
     -h, --help  Show this screen
     --version   Show the version of the project
 
@@ -43,6 +42,7 @@ int main(int argc, const char *argv[]) {
 	/// \TODO 
 	///  Modify the program syntax and the call to **docopt()** in order to
 	///  add options and arguments to the program.
+  /// \DONE
     std::map<std::string, docopt::value> args = docopt::docopt(USAGE,
         {argv + 1, argv + argc},	// array of arguments, without the program name
         true,    // show help if requested
@@ -52,7 +52,7 @@ int main(int argc, const char *argv[]) {
 	std::string output_txt = args["<output-txt>"].asString();
   float umaxnorm = stof(args["--umaxnorm"].asString());
   float ur1norm = stof(args["--ur1norm"].asString());
-  float upot = stof(args["--upot"].asString());
+  float ucenterclipping = stof(args["--ucenterclipping"].asString());
 
   // Read input sound file
   unsigned int rate;
@@ -66,18 +66,19 @@ int main(int argc, const char *argv[]) {
   int n_shift = rate * FRAME_SHIFT;
 
   // Define analyzer
-  PitchAnalyzer analyzer(n_len, rate, umaxnorm, ur1norm, upot, PitchAnalyzer::HAMMING, 60, 400);
+  PitchAnalyzer analyzer(n_len, rate, umaxnorm, ur1norm, ucenterclipping, PitchAnalyzer::HAMMING, 60, 400);
 
   /// \TODO
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
   /// central-clipping or low pass filtering may be used.
+  /// \DONE
 
   ///Normalitzar la senyal i aplicar center clipping
   float max_senyal = 0;
   for (unsigned int i = 0; i < x.size(); i++)
     if (x[i] > max_senyal)
       max_senyal = x[i];
-  float th_cp = 0.03*max_senyal;
+  float th_cp = ucenterclipping;
   for (unsigned int i = 0; i < x.size(); i++) {
     x[i] = x[i] / max_senyal;
     if (abs(x[i]) < th_cp)
@@ -99,22 +100,26 @@ int main(int argc, const char *argv[]) {
   /// \TODO
   /// Postprocess the estimation in order to supress errors. For instance, a median filter
   /// or time-warping may be used.
+  /// \DONE
 
+  f0[0] = 0;
+
+  //Filtre de mediana
   std::vector<float> f0_aux(f0);
-  float max = 0.0;
-  float min = 10000.0;
+  float max;
+  float min;
 
-  /*for (unsigned int j = 2; j < f0_aux.size() - 1; j++) {
-    for (unsigned int i = -1; i < 2; i++) {
-      if (f0_aux[i] > max)
-        f0_aux[i] = max;
-      if (f0_aux[i] < min)
-        f0_aux[i] = min;
+  for (unsigned int j = 1; j < f0_aux.size() - 1; j++) {
+    max = 0;
+    min = 500;
+    for (int i = -1; i < 2; i++) {
+      if (f0_aux[j+i] > max)
+        max = f0_aux[j+i];
+      if (f0_aux[j+i] < min)
+        min = f0_aux[j+i];
     }
-    min = min(min(f0_aux[j-1], f0_aux[j]), f0_aux[j+1]);
-    max = max(max(f0_aux[j-1], f0_aux[j]), f0_aux[j+1]);
     f0[j] = f0_aux[j-1] + f0_aux[j] + f0_aux[j+1] - max - min;
-  }*/
+  }
 
   // Write f0 contour into the output file
   ofstream os(output_txt);

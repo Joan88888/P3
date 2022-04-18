@@ -10,6 +10,7 @@ using namespace std;
 
 /// Name space of UPC
 namespace upc {
+  //intent cepstrum
   void PitchAnalyzer::cepstrum(const vector<float> &x, vector<float> &c) const {
     float a = log2(x.size());
     unsigned int n = ceil(a);
@@ -91,11 +92,7 @@ namespace upc {
 
     /// \DONE Voice/unvoiced detector imlemented
 
-    // dissenyar el millor possible utilitzant els 3 paràmetres. afegir-ne d'altres com zcr
-    // per exemple si es superen els 3 o 2/3 umbrals
-    // AMDF para encontrar candidato a pitch
-    // cepstrum
-    if (rmaxnorm > umaxnorm && r1norm > ur1norm && pot >= upot) return false;
+    if (rmaxnorm > umaxnorm && r1norm > ur1norm) return false;
     return true;
   }
 

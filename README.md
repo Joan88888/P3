@@ -74,7 +74,7 @@ Ejercicios básicos
 
       ```c++
       bool PitchAnalyzer::unvoiced(float pot, float r1norm, float rmaxnorm) const {
-        if (rmaxnorm > umaxnorm && r1norm > ur1norm && pot >= upot) return false;
+        if (rmaxnorm > umaxnorm && r1norm > ur1norm) return false;
         return true;
       }
       ```
@@ -96,6 +96,8 @@ Ejercicios básicos
 
       <img src="img/p3_pitch_2.png" width="800" align="center">
       <img src="img/p3_autocorrelacio.png" width="800" align="center">
+      ***Observamos como tanto en la potencia como en r1norm y en rmaxnorm aparecen máximos en los tramos sonoros y mínimos en los tramos sordos. También podemos ver como un buen umbral de decisión para r1norm y rmaxnorm estará alrededor de 0.4, mientras que para la potencia rondará los 30-40 dB. Hemos decidido que no usaremos la tasa de cruces por cero, ya que consideramos que no es demasiado relevante.***
+      
 
       - Use el estimador de pitch implementado en el programa `wavesurfer` en una señal de prueba y compare
 	    su resultado con el obtenido por la mejor versión de su propio sistema.  Inserte una gráfica
@@ -117,7 +119,8 @@ Ejercicios básicos
     y el *score* TOTAL proporcionados por `pitch_evaluate` en la evaluación de la base de datos 
 	`pitch_db/train`..
 
-    <img src="img/p3_score_1.png" width="800" align="center">
+    ***Score final con los ejercicios de ampliación:***
+    <img src="img/p3_score_final.png" width="800" align="center">
 
 Ejercicios de ampliación
 ------------------------
@@ -164,8 +167,94 @@ Ejercicios de ampliación
   También se valorará la realización de un estudio de los parámetros involucrados. Por ejemplo, si se opta
   por implementar el filtro de mediana, se valorará el análisis de los resultados obtenidos en función de
   la longitud del filtro.
-   
+  ***Hemos realizado las siguientes mejoras de preprocesado y post procesado***
 
+  ***Normalización y center clipping tanto de la señal como de la autocorrelación (preprocesado):***
+
+  ```c++
+  ///Normalitzar la senyal i aplicar center clipping
+  float max_senyal = 0;
+  for (unsigned int i = 0; i < x.size(); i++)
+    if (x[i] > max_senyal)
+      max_senyal = x[i];
+  float th_cp = ucenterclipping;
+  for (unsigned int i = 0; i < x.size(); i++) {
+    x[i] = x[i] / max_senyal;
+    if (abs(x[i]) < th_cp)
+      x[i] = 0;
+    if (x[i] > th_cp)
+      x[i] -= th_cp;
+    if (x[i] < -th_cp)
+      x[i] += th_cp;
+  }
+  ```
+
+  ```c++
+  //Normalitzar autocorrelació i aplicar center clipping
+  float max_r = *max_element(r.begin(), r.end());
+  float th_cp_r = 0.1;
+  for (unsigned int i = 0; i < r.size(); i++) {
+    r[i] = r[i] / max_r;
+    if (abs(r[i]) < th_cp_r)
+      r[i] = 0;
+    if (r[i] > th_cp_r)
+      r[i] -= th_cp_r;
+    if (r[i] < -th_cp_r)
+      r[i] += th_cp_r;
+  }
+  ```
+
+  ***Filtro de mediana de grado 3 no recursivo (postprocesado):***
+
+  ```c++
+  //Filtre de mediana
+  std::vector<float> f0_aux(f0);
+  float max;
+  float min;
+
+  for (unsigned int j = 1; j < f0_aux.size() - 1; j++) {
+    max = 0;
+    min = 500;
+    for (int i = -1; i < 2; i++) {
+      if (f0_aux[j+i] > max)
+        max = f0_aux[j+i];
+      if (f0_aux[j+i] < min)
+        min = f0_aux[j+i];
+    }
+    f0[j] = f0_aux[j-1] + f0_aux[j] + f0_aux[j+1] - max - min;
+  }
+  ```
+
+  ***Optimización de parámetros. Al final no utilizamos la potencia para el decisor de voiced/unvoiced y entramos como 3r parámetro el umbral de center clipping de la señal, y determinamos que los parámetros óptimos son umaxnorm=0.29  ur1norm=0.36  y ucenterclipping=0.02, con los que hemos optenido una evaluación total de 91.23 %***
+
+  <img src="img/p3_optimitzacio_1.png" width="800" align="center">
+  <img src="img/p3_optimitzacio_2.png" width="800" align="center">
+
+  ***Cepstrum. Intentamos implementarlo pero nos daba errores que no hemos sido capaces de solucionar a tiempo, así que al final utilizamos autocorrelación***
+
+  ```c++
+  //intent cepstrum
+  void PitchAnalyzer::cepstrum(const vector<float> &x, vector<float> &c) const {
+    float a = log2(x.size());
+    unsigned int n = ceil(a);
+    long len = 2^n;
+    ffft::FFTReal <float> fft_object (len);
+
+    float x2 [len];
+    float f [len];
+    float f_log [len];
+    float cep [len];
+
+    for (unsigned int i = 0; i < x.size(); i++)
+      x2[i] = x[i];
+    fft_object.do_fft(f, x2);
+    for (unsigned int i = 0; i < len; i++)
+      f_log[i] = log10(abs(f[i]));
+    fft_object.do_ifft(f_log, cep);
+    for (unsigned int i = 0; i < c.size(); i++)
+      c[i] = cep[i];
+  }
+  ```
 Evaluación *ciega* del estimador
 -------------------------------
 

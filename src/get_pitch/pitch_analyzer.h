@@ -31,7 +31,7 @@ namespace upc {
       npitch_min, ///< minimum value of pitch period, in samples
       npitch_max; ///< maximum value of pitch period, in samples
     
-    float umaxnorm, ur1norm, upot;
+    float umaxnorm, ur1norm, ucenterclipping;
  
     
     void cepstrum(const std::vector<float> &x, std::vector<float> &c) const;
@@ -57,7 +57,7 @@ namespace upc {
 					unsigned int sFreq,			///< Sampling rate in Hertzs
 					float umaxnorm_,
           float ur1norm_,
-          float upot_,
+          float ucenterclipping_,
           Window w=PitchAnalyzer::HAMMING,	///< Window type
 					float min_F0 = MIN_F0,		///< Pitch range should be restricted to be above this value
 					float max_F0 = MAX_F0		///< Pitch range should be restricted to be below this value
@@ -69,7 +69,7 @@ namespace upc {
       set_window(w);
       umaxnorm = umaxnorm_;
       ur1norm = ur1norm_;
-      upot = upot_;
+      ucenterclipping = ucenterclipping_;
     }
 
 	///

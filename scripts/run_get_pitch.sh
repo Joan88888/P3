@@ -2,9 +2,9 @@
 
 # Put here the program (maybe with path)
 if [ $# -ne 3 ]; then
-    GETF0="get_pitch --umaxnorm=0.42 --ur1norm=0.4 --upot=-50"
+    GETF0="get_pitch --umaxnorm=0.29 --ur1norm=0.36 --ucenterclipping=0.02"
 else
-    GETF0="get_pitch --umaxnorm=$1 --ur1norm=$2 --upot=$3"
+    GETF0="get_pitch --umaxnorm=$1 --ur1norm=$2 --ucenterclipping=$3"
 fi
 
 for fwav in pitch_db/train/*.wav; do
